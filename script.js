@@ -1,12 +1,12 @@
+const $body = $("body");
+const $grid = $(".grid");
+const $employee = $(".employee");
+const $employeeOutput = $(".output", ".employee");
 
-const $body = $('body');
-const $grid = $('.grid');
-const $employee = $('.employee');
-
-const sucFunc = (data) => {
-  let results = data.results
-  let person = data.results.map(person => `
-  <div class="box">
+// combine html/json for each user and print to DOM
+function printUser(data) {
+  const person = data.results.map((person) => {
+    return `<div class="box">
     <div class="col1">
       <div class="avatar" style="background-image:url('${person.picture.large}');"></div>
     </div>
@@ -28,37 +28,38 @@ const sucFunc = (data) => {
       <div class="dob">Birthday: <span class="output"></span><span class="input">${person.dob}</span></div>
     </div>
     <div class="exit">x</div>
-  </div>`);
+  </div>`;
+  });
   $grid.html(person);
 }
 
-const ajxFunc = () => {
+// request data from randomuser.me using jquery ajax
+function apiCall() {
   $.ajax({
-    url: 'https://randomuser.me/api/?results=12&inc=name,email,location,dob,cell,picture',
-    dataType: 'json',
-    success: sucFunc
+    url:
+      "https://randomuser.me/api/?results=12&inc=name,email,location,dob,cell,picture",
+    dataType: "json",
+    success: printUser,
   });
 }
 
-const resetFunc = () => {
-  $body.removeClass('lightbox');
-  let store = '';
-  $('.employee').html('');
-  let dob = '';
-  $('.output','.employee').html('');
+function closeOverlay() {
+  $body.removeClass("lightbox");
+  $employee.html("");
+  $employeeOutput.html("");
 }
 
-function overlayFunc() {
-  $body.addClass('lightbox');
+function openOverlay() {
+  $body.addClass("lightbox");
   let store = $(this).html();
-  $('.employee').html(store);
-  let dob = $('.input','.employee').html().slice(0,10);
-  $('.output','.employee').html(dob);
+  $employee.html(store);
+  let dob = $(".input", ".employee").html().slice(0, 10);
+  $employeeOutput.html(dob);
 }
 
-ajxFunc();
+apiCall();
 
-$(document).ready(function() {
-  $grid.on('click','.box',overlayFunc);
-  $employee.on('click','.exit',resetFunc);
+$(document).ready(function () {
+  $grid.on("click", ".box", openOverlay);
+  $employee.on("click", ".exit", closeOverlay);
 });
