@@ -6,6 +6,8 @@ const $employeeOutput = $(".output", ".employee");
 // combine html/json for each user and print to DOM
 function printUser(data) {
   const person = data.results.map((person) => {
+    const bday = person.dob.date.slice(0, 10);
+
     return `<div class="box">
     <div class="col1">
       <div class="avatar" style="background-image:url('${person.picture.large}');"></div>
@@ -21,11 +23,11 @@ function printUser(data) {
     <div class="col3">
       <div class="cell">${person.cell}</div>
       <div class="address">
-        <span class="street">${person.location.street}, </span>
+        <span class="street">${person.location.street.name}, </span>
         <span class="state">${person.location.state}, </span>
         <span class="postcode">${person.location.postcode}</span>
       </div>
-      <div class="dob">Birthday: <span class="output"></span><span class="input">${person.dob}</span></div>
+      <div class="dob">Birthday: <span class="output">${bday}</span></div>
     </div>
     <div class="exit">x</div>
   </div>`;
@@ -53,8 +55,6 @@ function openOverlay() {
   $body.addClass("lightbox");
   let store = $(this).html();
   $employee.html(store);
-  let dob = $(".input", ".employee").html().slice(0, 10);
-  $employeeOutput.html(dob);
 }
 
 apiCall();
